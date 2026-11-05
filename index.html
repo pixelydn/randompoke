@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Random Pokémon Generator</title>
+    <!--
+            log:
+                
+    -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+        body {
+            font-family: "Noto Sans";
+        }
+    </style>
+</head>
+
+<body>
+    <img class="sprite" src="" alt="pokemon">
+    <button class="generate">Generate</button>
+
+    <script>
+        const sprite = document.querySelector(".sprite");
+        const button = document.querySelector(".generate");
+        let pokemon = {};
+        const shinyOdd = 8192;
+
+        function getRandomInt(min, max) {
+            const minCeiled = Math.ceil(min);
+            const maxFloored = Math.floor(max);
+            return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
+        }
+
+        // 258 => .../sprites/pokemon/258.png
+        function getSpriteUrl(id) {
+            return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + (pokemon.shiny ? "shiny/" : "") + id + ".png";
+        }
+
+        function getPokemon() {
+            // very simplified here
+            // I was using 'isShiny' and I do think it is better but 'shiny' fits better in an object 
+            return {
+                id: getRandomInt(1, 1025),
+                hp: getRandomInt(1, 31),
+                atk: getRandomInt(1, 31),
+                def: getRandomInt(1, 31),
+                spa: getRandomInt(1, 31),
+                spd: getRandomInt(1, 31),
+                spe: getRandomInt(1, 31),
+                shiny: getRandomInt(0, shinyOdd) == 0
+            }
+        }
+
+        function generate() {
+            pokemon = getPokemon();
+            sprite.src = getSpriteUrl(pokemon.id);
+            sprite.alt = "pokemon #" + pokemon.id;
+        }
+
+        button.onclick = generate;
+    </script>
+</body>
+
+</html>
