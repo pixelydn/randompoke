@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+body {
+    font-family: "Noto Sans";
+    display: block;
+}
+
+/* remember use rem for scaling */
+
+.sprite-container {
+    position: absolute;
+    background-color: white;
+    height: 12rem;
+    width: 12rem;
+}
+
+.sprite {
+    position: absolute;
+    image-rendering: pixelated;
+    height: 12rem;
+    width: 12rem;
+}
+
+.gender {
+    position: absolute;
+}
+
+.color {
+    position: absolute;
+    bottom: 0rem;
+    right: 0rem;
+    height: 1.5rem;
+    width: 1.5rem;
+    border-radius: 0.75rem;
+}
+
+.name {
+    position: absolute;
+    text-transform: uppercase;
+}
+
+.generate {
+    position: absolute;
+    top: 15rem;
+}
