@@ -20,13 +20,15 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// 258 => .../sprites/pokemon/258.png
-function getSpriteUrl(id, species) {
+// (258, "other/dream-world/", ".svg") => .../sprites/pokemon/other/dream-world/258.svg
+function getSpriteUrl(id, path, ext) {
     const spritePath = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
-    return spritePath +
+    return spritePath + 
+        path +
         (pokemon.shiny ? "shiny/" : "") +
         (pokemon.hasGenderDifferences && pokemon.gender == "female" ? "female/" : "") +
-        id + ".png";
+        id + 
+        ext;
 }
 
 function getPokemon(id, species) {
@@ -51,17 +53,34 @@ function getPokemon(id, species) {
 }
 
 function makePokemon(id) {
-    sprite.src = getSpriteUrl(pokemon.id);
+
+    // fallback order
+    const spriteList = [
+        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/animated/", ".gif"),
+        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/", ".png"),
+        getSpriteUrl(pokemon.id, "other/dream-world/", ".svg"),
+        getSpriteUrl(pokemon.id, "", ".png"),
+    ];
+    let spriteIndex = 0;
+
+    sprite.src = spriteList[0];
     sprite.alt = pokemon.name;
+
+    // try the next sprite in the list until one loads
+    sprite.onerror = function () {
+        spriteIndex = spriteIndex + 1;
+        if (spriteIndex < spriteList.length) {
+            sprite.src = spriteList[spriteIndex];
+        }
+    }
+
     gender.innerHTML =
-        gender == "male" ? ">&male;" :
-        gender == "female" ? ">&female;" :
-        gender == "genderless" ? "" :
+        pokemon.gender == "male" ? "&male;" :
+        pokemon.gender == "female" ? "&female;" :
         "";
     gender.style.color =
-        gender == "male" ? "#4ccafd" :
-        gender == "female" ? "#f79892" :
-        gender == "genderless" ? "" :
+        pokemon.gender == "male" ? "#4ccafd" :
+        pokemon.gender == "female" ? "#f79892" :
         "";
     color.style.backgroundColor = pokemon.color;
     name.innerHTML = pokemon.name
