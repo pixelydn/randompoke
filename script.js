@@ -45,7 +45,7 @@ function getPokemon(id, species) {
             spd: getRandomInt(0, 31),
             spe: getRandomInt(0, 31),
         },
-        shiny: getRandomInt(1, shinyOdd) == 0,
+        shiny: getRandomInt(1, shinyOdd) == 1,
         color: species.color.name,
     }
 }
@@ -55,14 +55,14 @@ function makePokemon(id) {
     sprite.alt = pokemon.name;
     gender.innerHTML =
         gender == "male" ? ">&male;" :
-            gender == "female" ? ">&female;" :
-                gender == "genderless" ? "" :
-                    "";
+        gender == "female" ? ">&female;" :
+        gender == "genderless" ? "" :
+        "";
     gender.style.color =
         gender == "male" ? "#4ccafd" :
-            gender == "female" ? "#f79892" :
-                gender == "genderless" ? "" :
-                    "";
+        gender == "female" ? "#f79892" :
+        gender == "genderless" ? "" :
+        "";
     color.style.backgroundColor = pokemon.color;
     name.innerHTML = pokemon.name
 }
