@@ -4,6 +4,7 @@ const button = document.querySelector(".generate");
 const gender = document.querySelector(".gender");
 const name = document.querySelector(".name");
 const color = document.querySelector(".color");
+const shinyIcon = document.querySelector(".shiny-icon");
 
 let pokemon = {};
 const shinyOdd = 4096;
@@ -83,6 +84,8 @@ function makePokemon(id) {
         pokemon.gender == "female" ? "#f79892" :
         "";
     color.style.backgroundColor = pokemon.color;
+    shinyIcon.style.visibility = pokemon.shiny ? "visible" : "hidden";
+
     name.innerHTML = pokemon.name
 }
 
