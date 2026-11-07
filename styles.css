@@ -76,6 +76,11 @@ body {
     width: 100%;
 }
 
+.iv-container {
+    width: 14rem;
+    height: 14rem;
+}
+
 .generate {
     position: absolute;
     top: 15rem;

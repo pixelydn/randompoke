@@ -15,7 +15,7 @@
     <!--
         log:
             2026-11-05: prototype
-            2026-11-06: fetch from pokeapi
+            2026-11-06: fetch from pokeapi, added iv chart
     -->
 </head>
 
@@ -28,6 +28,8 @@
                 <p class="gender"></p>
                 <p class="name"></p>
                 <p class="color"></p>
+
+                <!-- found this on pokeapi -->
                 <span class="shiny-icon" title="Shiny">
                     <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M10 2L12.5 8L18 10L12.5 12L10 18L7.5 12L2 10L7.5 8Z"></path>
@@ -40,13 +42,12 @@
         <div class="dex-hinge"></div>
 
         <div class="dex-right">
-            <div class="iv">
-                
+            <div class="iv-container">
+                <canvas class="iv-chart"></canvas>
             </div>
         </div>
     </div>
     <button class="generate">Generate</button>
-
 </body>
 
 </html>

@@ -5,9 +5,44 @@ const gender = document.querySelector(".gender");
 const name = document.querySelector(".name");
 const color = document.querySelector(".color");
 const shinyIcon = document.querySelector(".shiny-icon");
+const ivCanvas = document.querySelector(".iv-chart");
 
 let pokemon = {};
 const shinyOdd = 4096;
+
+// use chart.js to make iv chart
+const ivChart = new Chart(ivCanvas, {
+    type: "radar",
+    data: {
+        labels: [
+            ["HP", 0],
+            ["Atk", 0],
+            ["Def", 0],
+            ["Spe", 0],
+            ["SpD", 0],
+            ["SpA", 0],
+        ],
+        datasets: [{                                        // <== path to here is ivChart.data.datasets[0].data
+            label: "IVs",
+            // init to 0
+            data: [0, 0, 0, 0, 0],
+            backgroundColor: "rgba(255, 255, 255, 0.4)",
+            borderColor: "white",
+            pointBackgroundColor: "white",
+        }],
+    },
+    options: {
+        scales: {
+            r: {
+                min: 0,
+                max: 31,
+                grid: { color: "white" },
+                angleLines: { color: "white" },
+                pointLabels: { color: "white" },
+            },
+        },
+    },
+});
 
 // async function to allow the use of await
 async function fetchSpecies(id) {
@@ -89,6 +124,28 @@ function makePokemon(id) {
     name.innerHTML = pokemon.name
 }
 
+function updateIVChart() {
+    ivChart.data.datasets[0].data = [
+        pokemon.ivs.hp,
+        pokemon.ivs.atk,
+        pokemon.ivs.def,
+        pokemon.ivs.spe,
+        pokemon.ivs.spd,
+        pokemon.ivs.spa,
+    ];
+
+    ivChart.data.labels = [
+        ["HP", pokemon.ivs.hp],
+        ["Atk", pokemon.ivs.atk],
+        ["Def", pokemon.ivs.def],
+        ["Spe", pokemon.ivs.spe],
+        ["SpD", pokemon.ivs.spd],
+        ["SpA", pokemon.ivs.spa],
+    ];
+
+    ivChart.update();
+}
+
 function getPokemonGender(rate) {
     if (rate == -1) {
         return "genderless";
@@ -106,5 +163,6 @@ async function generate() {
     console.log(pokemon)
 
     makePokemon(id);
+    updateIVChart();
 }
 button.onclick = generate;
