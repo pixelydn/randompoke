@@ -94,8 +94,10 @@ function makePokemon(id) {
     const spriteList = [
         getSpriteUrl(pokemon.id, "versions/generation-v/black-white/animated/", ".gif"),
         getSpriteUrl(pokemon.id, "versions/generation-v/black-white/", ".png"),
-        getSpriteUrl(pokemon.id, "other/dream-world/", ".svg"),
-        getSpriteUrl(pokemon.id, "", ".png"),
+
+        // did some clac and it turns out thatit will never fallback to this
+        // getSpriteUrl(pokemon.id, "other/dream-world/", ".svg"),
+        // getSpriteUrl(pokemon.id, "", ".png"),
     ];
     let spriteIndex = 0;
 
