@@ -6,6 +6,7 @@ const name = document.querySelector(".name");
 const color = document.querySelector(".color");
 const shinyIcon = document.querySelector(".shiny-icon");
 const ivCanvas = document.querySelector(".iv-chart");
+const bstCanvas = document.querySelector(".bst-chart");
 
 let pokemon = {};
 const shinyOdd = 4096;
@@ -25,7 +26,7 @@ const ivChart = new Chart(ivCanvas, {
         datasets: [{                                        // <== path to here is ivChart.data.datasets[0].data
             label: "IVs",
             // init to 0
-            data: [0, 0, 0, 0, 0],
+            data: [0, 0, 0, 0, 0, 0],
             backgroundColor: "rgba(255, 255, 255, 0.4)",
             borderColor: "white",
             pointBackgroundColor: "white",
@@ -44,10 +45,48 @@ const ivChart = new Chart(ivCanvas, {
     },
 });
 
+const bstChart = new Chart(bstCanvas, {
+    type: "bar",
+    data: {
+        labels: [
+            ["HP", 0],
+            ["Atk", 0],
+            ["Def", 0],
+            ["Spe", 0],
+            ["SpD", 0],
+            ["SpA", 0],
+        ],
+        datasets: [{
+        label: "Base stats",
+        data: [0, 0, 0, 0, 0, 0],
+        backgroundColor: "white",
+        }],
+    },
+    options: {
+        scales: {
+            y: {
+                min: 0,
+                max: 255,
+            }
+        }
+    }
+});
+
 // async function to allow the use of await
-async function fetchSpecies(id) {
-    const banana = await fetch("https://pokeapi.co/api/v2/pokemon-species/" + id);
+async function fetchJson(url) {
+    const banana = await fetch(url);
     return await banana.json();
+}
+
+async function fetchSpecies(id) {
+    return await fetchJson("https://pokeapi.co/api/v2/pokemon-species/" + id);
+}
+
+async function fetchVarieties(species) {
+    const varieties = species.varieties;
+    const variety = varieties[getRandomInt(0, varieties.length - 1)];
+
+    return await fetchJson(variety.pokemon.url);
 }
 
 function getRandomInt(min, max) {
@@ -67,12 +106,12 @@ function getSpriteUrl(id, path, ext) {
         ext;
 }
 
-function getPokemon(id, species) {
+function getPokemon(id, species, varient) {
     // very simplified here
     // I was using 'isShiny' and I do think it is better but 'shiny' fits better in an object 
     return {
-        id: id,
-        name: species.name,
+        id: varient.id,
+        name: varient.name,
         gender: getPokemonGender(species.gender_rate),
         hasGenderDifferences: species.has_gender_differences,
         ivs: {
@@ -82,6 +121,14 @@ function getPokemon(id, species) {
             spa: getRandomInt(0, 31),
             spd: getRandomInt(0, 31),
             spe: getRandomInt(0, 31),
+        },
+        bst: {
+            hp: varient.stats[0].base_stat,
+            atk: varient.stats[1].base_stat,
+            def: varient.stats[2].base_stat,
+            spa: varient.stats[3].base_stat,
+            spd: varient.stats[4].base_stat,
+            spe: varient.stats[5].base_stat,
         },
         shiny: getRandomInt(1, shinyOdd) == 1,
         color: species.color.name,
@@ -122,6 +169,7 @@ function makePokemon(id) {
         "";
     color.style.backgroundColor = pokemon.color;
     shinyIcon.style.visibility = pokemon.shiny ? "visible" : "hidden";
+    sprite.style.visibility = "visible";
 
     name.innerHTML = pokemon.name
 }
@@ -148,6 +196,28 @@ function updateIVChart() {
     ivChart.update();
 }
 
+function updateBSTChart() {
+    bstChart.data.datasets[0].data = [
+        pokemon.bst.hp,
+        pokemon.bst.atk,
+        pokemon.bst.def,
+        pokemon.bst.spd,
+        pokemon.bst.spa,
+        pokemon.bst.spe,
+    ];
+
+    bstChart.data.labels = [
+        ["HP", pokemon.bst.hp],
+        ["Atk", pokemon.bst.atk],
+        ["Def", pokemon.bst.def],
+        ["SpD", pokemon.bst.spd],
+        ["SpA", pokemon.bst.spa],
+        ["Spe", pokemon.bst.spe],
+    ];
+
+    bstChart.update();
+}
+
 function getPokemonGender(rate) {
     if (rate == -1) {
         return "genderless";
@@ -161,10 +231,14 @@ async function generate() {
     const species = await fetchSpecies(id);
     console.log(species);
 
-    pokemon = getPokemon(id, species);
-    console.log(pokemon)
+    const variant = await fetchVarieties(species);
+    console.log(variant);
+
+    pokemon = getPokemon(id, species, variant);
+    console.log(pokemon);
 
     makePokemon(id);
     updateIVChart();
+    updateBSTChart();
 }
 button.onclick = generate;

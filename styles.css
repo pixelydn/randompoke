@@ -82,6 +82,11 @@ body {
     height: 14rem;
 }
 
+.bst-container {
+    width: 14rem;
+    height: 10rem;
+}
+
 .generate {
     position: absolute;
     top: 15rem;
