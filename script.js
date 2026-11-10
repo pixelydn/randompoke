@@ -7,6 +7,36 @@ const color = document.querySelector(".color");
 const shinyIcon = document.querySelector(".shiny-icon");
 const ivCanvas = document.querySelector(".iv-chart");
 const bstCanvas = document.querySelector(".bst-chart");
+const nature = document.querySelector(".nature");
+const dexNumber = document.querySelector(".dex-number");
+
+const natures = [
+    "Bashful (+Sp. Atk, -Sp. Atk)", 
+    "Docile (+Defense, -Defense)", 
+    "Hardy (+Attack, -Attack)", 
+    "Quirky (+Sp. Def, -Sp. Def)", 
+    "Serious (+Speed, -Speed)", 
+    "Adamant (+Attack, -Sp. Atk)", 
+    "Brave (+Attack, -Speed)", 
+    "Lonely (+Attack, -Defense)", 
+    "Naughty (+Attack, -Sp. Def)", 
+    "Bold (+Defense, -Attack)", 
+    "Impish (+Defense, -Sp. Atk)", 
+    "Lax (+Defense, -Sp. Def)", 
+    "Relaxed (+Defense, -Speed)", 
+    "Mild (+Sp. Atk, -Defense)", 
+    "Modest (+Sp. Atk, -Attack)", 
+    "Quiet (+Sp. Atk, -Speed)", 
+    "Rash (+Sp. Atk, -Sp. Def)", 
+    "Calm (+Sp. Def, -Attack)", 
+    "Careful (+Sp. Def, -Sp. Atk)", 
+    "Gentle (+Sp. Def, -Defense)", 
+    "Sassy (+Sp. Def, -Speed)", 
+    "Hasty (+Speed, -Defense)", 
+    "Jolly (+Speed, -Sp. Atk)", 
+    "Naive (+Speed, -Sp. Def)", 
+    "Timid (+Speed, -Attack)",
+];
 
 // set chart.js fonts here
 Chart.defaults.font.family = "'Pixelify Sans', monospace";
@@ -132,6 +162,7 @@ function getPokemon(id, species, varient) {
     return {
         id: varient.id,
         name: varient.name,
+        dex: id,
         gender: getPokemonGender(species.gender_rate),
         hasGenderDifferences: species.has_gender_differences,
         ivs: {
@@ -142,6 +173,7 @@ function getPokemon(id, species, varient) {
             spd: getRandomInt(0, 31),
             spe: getRandomInt(0, 31),
         },
+        nature: natures[getRandomInt(0, natures.length - 1)],
         bst: {
             hp: varient.stats[0].base_stat,
             atk: varient.stats[1].base_stat,
@@ -195,6 +227,10 @@ function makePokemon(id) {
         pokemon.gender == "male" ? "#4ccafd" :
         pokemon.gender == "female" ? "#f79892" :
         "";
+    nature.innerHTML = pokemon.nature;
+
+    dexNumber.innerHTML = "# " + pokemon.dex;
+
     color.style.backgroundColor = pokemon.color;
     shinyIcon.style.visibility = pokemon.shiny ? "visible" : "hidden";
     sprite.style.visibility = "visible";
@@ -255,7 +291,7 @@ function getPokemonGender(rate) {
 
 async function generate() {
     const id = getRandomInt(1, 1025);
-    // const id = 890  // testing use
+    // const id = 806  // testing use
 
     const species = await fetchSpecies(id);
     console.log(species);

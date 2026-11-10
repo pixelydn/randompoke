@@ -3,6 +3,7 @@
 body {
     font-family: "Pixelify Sans";
     display: block;
+    color: var(--sprite-screen);
 
     /* shell */
     --shell: #d7263d;
@@ -62,18 +63,19 @@ body {
 }
 
 .dex-right {
-    display: block;
+    display: flex;
+    flex-direction: column;
     border-radius: 0 1.75rem 1.75rem 0;
     background-color: var(--shell);
     height: 45rem;
     width: 36.5rem;
 }
 
-/* .panel {
+.panel {
     background-color: var(--screen);
-    border: var(--outline) 2rem solid;
+    border: var(--outline) 0.25rem solid;
     border-radius: 1rem;
-} */
+}
 
 .deco {
     display: flex;
@@ -107,14 +109,25 @@ body {
     border: 0.3125rem solid white; 
 }
 
+/* the row with these 2 elements */
+.sprite-info-container {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: center;
+}
+
 /* sprite screen, "relative" so things inside can stick to its corners */
 .sprite-container {
-    top: 5rem;
-    left: 2rem;
-    position: relative;
-    background-color: white;
+    display: flex;
+    background-color: var(--sprite-screen);
     height: 12rem;
     width: 12rem;
+    border: var(--sprite-frame) solid 1.5rem;
+    border-top-width: 2.5em;
+    border-bottom-width: 3em;
+    border-radius: 0.25rem 0.25rem 0.25rem 3rem;
+    position: relative;
 }
 
 .sprite {
@@ -174,12 +187,38 @@ body {
     height: 14rem;
 }
 
+.random-info {
+    justify-content: center;
+}
+
+.nature {
+    display: flex;
+    justify-content: center;
+}
+
+/* top row of dex-right containing mon id and type */
+.id-type {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.dex-number {
+    display: flex;
+    align-items: flex-start;
+}
+
+.mon-type {
+    display: flex;
+    align-items: flex-end;
+}
+
 .bst-container {
-    width: 15rem;
+    width: 30rem;
     height: 15rem;
 }
 
 .generate {
-    position: absolute;
+    display: flex;
     top: 15rem;
 }
