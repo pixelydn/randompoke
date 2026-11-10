@@ -86,14 +86,7 @@ const ivChart = new Chart(ivCanvas, {
 const bstChart = new Chart(bstCanvas, {
     type: "bar",
     data: {
-        labels: [
-            ["HP", 0],
-            ["Atk", 0],
-            ["Def", 0],
-            ["SpA", 0],
-            ["SpD", 0],
-            ["Spe", 0],
-        ],
+        labels: [0, 0, 0, 0, 0, 0],
         datasets: [{
         label: "Base Stat",
         data: [0, 0, 0, 0, 0, 0],
@@ -107,13 +100,29 @@ const bstChart = new Chart(bstCanvas, {
             legend: { display: false },
         },
         scales: {
-            x: {  
+            x: {
                 min: 0,
                 max: 255,
-                ticks: { stepSize: 50, color: "white" },
+                ticks: {
+                    display: false, 
+                    stepSize: 50,
+                },
+                border: { display: false },
+                grid: {
+                    color: "rgba(255, 255, 255, 0.25)",
+                    drawTicks: false,
+                },
             },
             y: {
-                ticks: { color: "white" },  // the HP / Atk... labels
+                grid: { display: false },
+                ticks: {
+                    color: "white",
+                    crossAlign: "far",  // left align the numbers
+                },
+                // lock the number column width so the bars don't shift
+                afterFit: function (scale) {
+                    scale.width = 40;
+                },
             },
         },
     },
@@ -271,12 +280,12 @@ function updateBSTChart() {
     ];
 
     bstChart.data.labels = [
-        ["HP", pokemon.bst.hp],
-        ["Atk", pokemon.bst.atk],
-        ["Def", pokemon.bst.def],
-        ["SpA", pokemon.bst.spa],
-        ["SpD", pokemon.bst.spd],
-        ["Spe", pokemon.bst.spe],
+        pokemon.bst.hp,
+        pokemon.bst.atk,
+        pokemon.bst.def,
+        pokemon.bst.spa,
+        pokemon.bst.spd,
+        pokemon.bst.spe,
     ];
 
     bstChart.update();

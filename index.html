@@ -11,6 +11,7 @@
 
     <!-- Pixelify Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     
     <!-- defer make script wait until page was loaded -->
     <script src="./script.js" defer></script>
@@ -33,31 +34,58 @@
                 <span class="light green"></span>
             </div>
             <div class="name-container">
-                <p class="name">Pokemon</p>
+                <p class="name">Pok&eacute;mon</p>
             </div>
-            <div class="sprite-container">
-                <img class="sprite" src="" alt="pokemon">
-                <p class="gender"></p>
-                <p class="color"></p>
 
-                <!-- found this on pokeapi -->
-                <span class="shiny-icon" title="Shiny">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M10 2L12.5 8L18 10L12.5 12L10 18L7.5 12L2 10L7.5 8Z"></path>
-                        <path d="M19 15L20.2 18L23 19L20.2 20L19 23L17.8 20L15 19L17.8 18Z"></path>
-                    </svg>
-                </span>
+            <div class="sprite-info-container">
+
+                <div class="sprite-container">
+                    <img class="sprite" src="" alt="pokemon">
+                    <p class="gender"></p>
+                    <p class="color"></p>
+
+                    <!-- found this on pokeapi -->
+                    <span class="shiny-icon" title="Shiny">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10 2L12.5 8L18 10L12.5 12L10 18L7.5 12L2 10L7.5 8Z"></path>
+                            <path d="M19 15L20.2 18L23 19L20.2 20L19 23L17.8 20L15 19L17.8 18Z"></path>
+                        </svg>
+                    </span>
+                </div>
+
+                <div class="random-info panel">
+                    <div class="iv-container">
+                        <canvas class="iv-chart"></canvas>
+                    </div>
+                    <div class="nature-container">
+                        <p class="nature">Serious (+Speed, -Speed)</p>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="dex-hinge"></div>
 
         <div class="dex-right">
-            <div class="iv-container">
-                <canvas class="iv-chart"></canvas>
+            <div class="id-type">
+                <p class="dex-number"># 000</p>
+                <div class="mon-type">
+                    <img class="type1" src="" alt="normal">
+                    <img class="type2" src="" alt="">
+                </div>
             </div>
-            <div class="bst-container">
-                <canvas class="bst-chart"></canvas>
+            <div class="bst-container panel">
+                <div class="stat-names">
+                    <p>HP</p>
+                    <p>Atk</p>
+                    <p>Def</p>
+                    <p>SpA</p>
+                    <p>SpD</p>
+                    <p>Spe</p>
+                </div>
+                <div class="bst-canvas">
+                    <canvas class="bst-chart"></canvas>
+                </div>
             </div>
         </div>
     </div>

@@ -51,9 +51,8 @@ body {
     width: 36.5rem;
     gap: 2rem;
     flex-direction: row;
-
     padding: 2rem;
-    box-sizing: border-box
+    box-sizing: border-box;
 }
 
 .dex-hinge {
@@ -69,6 +68,9 @@ body {
     background-color: var(--shell);
     height: 45rem;
     width: 36.5rem;
+    box-sizing: border-box;
+    gap: 2rem;
+    padding: 2rem;
 }
 
 .panel {
@@ -80,6 +82,7 @@ body {
 .deco {
     display: flex;
     align-items: flex-start;
+    gap: 0.75rem;
 }
 
 .light {
@@ -124,8 +127,8 @@ body {
     height: 12rem;
     width: 12rem;
     border: var(--sprite-frame) solid 1.5rem;
-    border-top-width: 2.5em;
-    border-bottom-width: 3em;
+    border-top-width: 2.5rem;
+    border-bottom-width: 3rem;
     border-radius: 0.25rem 0.25rem 0.25rem 3rem;
     position: relative;
 }
@@ -144,7 +147,6 @@ body {
 
 /* corners of the screen */
 .name {
-    position: flex;
     text-transform: uppercase;
     font-size: larger;
     color: var(--sprite-screen);
@@ -200,7 +202,7 @@ body {
 .id-type {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .dex-number {
@@ -210,12 +212,34 @@ body {
 
 .mon-type {
     display: flex;
-    align-items: flex-end;
+    justify-content: flex-end;
 }
 
+/* names column + chart side by side, same height so the rows line up */
 .bst-container {
-    width: 30rem;
+    display: flex;
+    gap: 0.5rem;
     height: 15rem;
+    padding: 2rem;
+}
+
+.stat-names {
+    display: flex;
+    flex-direction: column;
+    padding: 0.625rem 0; /* 10px */
+}
+
+.stat-names p {
+    flex: 1;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.bst-canvas {
+    width: 25rem;
+    position: relative;
 }
 
 .generate {
