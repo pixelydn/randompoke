@@ -8,6 +8,10 @@ const shinyIcon = document.querySelector(".shiny-icon");
 const ivCanvas = document.querySelector(".iv-chart");
 const bstCanvas = document.querySelector(".bst-chart");
 
+// set chart.js fonts here
+Chart.defaults.font.family = "'Pixelify Sans', monospace";
+Chart.defaults.color = "white";
+
 let pokemon = {};
 const shinyOdd = 4096;
 
@@ -61,19 +65,19 @@ const bstChart = new Chart(bstCanvas, {
             ["Spe", 0],
         ],
         datasets: [{
-        label: "Base Stats",
+        label: "Base Stat",
         data: [0, 0, 0, 0, 0, 0],
         backgroundColor: "white",
         }],
     },
     options: {
-        maintainAspectRatio: false,
-        indexAxis: "y",
+        maintainAspectRatio: false, // use my scaling
+        indexAxis: "y", // vertically stacking
         plugins: {
             legend: { display: false },
         },
         scales: {
-            x: {   // ← the numbers are now along the bottom, so this was "y" before
+            x: {  
                 min: 0,
                 max: 255,
                 ticks: { stepSize: 50, color: "white" },
@@ -251,6 +255,7 @@ function getPokemonGender(rate) {
 
 async function generate() {
     const id = getRandomInt(1, 1025);
+    // const id = 890  // testing use
 
     const species = await fetchSpecies(id);
     console.log(species);

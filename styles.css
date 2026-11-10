@@ -1,8 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
 body {
-    font-family: "Noto Sans";
+    font-family: "Pixelify Sans";
     display: block;
+
+    /* shell */
+    --shell: #d7263d;
+    --shell-dark: #9e1b2c;
+    --outline: #1a1a1a;
+
+    /* screens */
+    --screen: #1d2b22;
+    --screen-text: #b8f2a0;
+    --screen-label: #8fc77c;
+    --bar-track: #0f1a12;
+    --sprite-frame: #e9e9e9;
+    --sprite-screen: #ffffff;
+
+    /* accents colors */
+    --cry-button: #ffd23f;
+    --shiny: #f59e0b;
+    --male: #4ccafd;
+    --female: #f79892;
+
+    /* lights deco */
+    --lens: #3fa9f5;
+    --light-red: #ff5a5a;
+    --light-yellow: #ffd23f;
+    --light-green: #4cd964;
 }
 
 /* remember use rem for scaling */
@@ -10,19 +35,82 @@ body {
 /* the red pokedex, halves side by side */
 .pokedex {
     display: flex;
-    gap: 1rem;
+    /* gap: 1rem; */
     width: fit-content;
-    background-color: #dc0a2d;
     padding: 1rem;
     border-radius: 1rem;
+    height: 45rem;
+    width: 75rem;
 }
 
 .dex-left {
+    border-radius: 1.75rem 0 0 1.75rem;
+    background-color: var(--shell);
+    height: 45rem;
+    width: 36.5rem;
+    gap: 2rem;
+    flex-direction: row;
+
+    padding: 2rem;
+    box-sizing: border-box
+}
+
+.dex-hinge {
+    background-color: var(--shell-dark);
+    height: 45rem;
+    width: 2rem;
+}
+
+.dex-right {
     display: block;
+    border-radius: 0 1.75rem 1.75rem 0;
+    background-color: var(--shell);
+    height: 45rem;
+    width: 36.5rem;
+}
+
+/* .panel {
+    background-color: var(--screen);
+    border: var(--outline) 2rem solid;
+    border-radius: 1rem;
+} */
+
+.deco {
+    display: flex;
+    align-items: flex-start;
+}
+
+.light {
+    height: 0.875rem;
+    width: 0.875rem;
+    border-radius: 50%;
+    border: 0.125rem solid var(--outline);
+}
+
+.red { 
+    background-color: var(--light-red); 
+}
+
+.yellow { 
+    background-color: var(--light-yellow); 
+}
+
+.green { 
+    background-color: var(--light-green); 
+}
+
+.lens {
+    height: 2.75rem;
+    width: 2.75rem;
+    border-radius: 50%;
+    background-color: var(--lens);
+    border: 0.3125rem solid white; 
 }
 
 /* sprite screen, "relative" so things inside can stick to its corners */
 .sprite-container {
+    top: 5rem;
+    left: 2rem;
     position: relative;
     background-color: white;
     height: 12rem;
@@ -38,13 +126,15 @@ body {
     image-rendering: pixelated;
     max-height: 80%;
     max-width: 80%;
+    visibility: hidden;
 }
 
 /* corners of the screen */
 .name {
-    position: relative;
-    margin: 0;
+    position: flex;
     text-transform: uppercase;
+    font-size: larger;
+    color: var(--sprite-screen);
 }
 
 .gender {
