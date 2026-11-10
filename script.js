@@ -24,7 +24,7 @@ const ivChart = new Chart(ivCanvas, {
             ["SpA", 0],
         ],
         datasets: [{                                        // <== path to here is ivChart.data.datasets[0].data
-            label: "IVs",
+            label: "IV",
             // init to 0
             data: [0, 0, 0, 0, 0, 0],
             backgroundColor: "rgba(255, 255, 255, 0.4)",
@@ -33,10 +33,14 @@ const ivChart = new Chart(ivCanvas, {
         }],
     },
     options: {
+        plugins: {
+            legend: { display: false },
+        },
         scales: {
             r: {
                 min: 0,
                 max: 31,
+                ticks: { display: false },
                 grid: { color: "white" },
                 angleLines: { color: "white" },
                 pointLabels: { color: "white" },
@@ -57,19 +61,28 @@ const bstChart = new Chart(bstCanvas, {
             ["Spe", 0],
         ],
         datasets: [{
-        label: "Base stats",
+        label: "Base Stats",
         data: [0, 0, 0, 0, 0, 0],
         backgroundColor: "white",
         }],
     },
     options: {
+        maintainAspectRatio: false,
+        indexAxis: "y",
+        plugins: {
+            legend: { display: false },
+        },
         scales: {
-            y: {
+            x: {   // ← the numbers are now along the bottom, so this was "y" before
                 min: 0,
                 max: 255,
-            }
-        }
-    }
+                ticks: { stepSize: 50, color: "white" },
+            },
+            y: {
+                ticks: { color: "white" },  // the HP / Atk... labels
+            },
+        },
+    },
 });
 
 // async function to allow the use of await
