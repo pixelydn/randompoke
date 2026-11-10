@@ -17,6 +17,10 @@ body {
     border-radius: 1rem;
 }
 
+.dex-left {
+    display: block;
+}
+
 /* sprite screen, "relative" so things inside can stick to its corners */
 .sprite-container {
     position: relative;
@@ -38,9 +42,7 @@ body {
 
 /* corners of the screen */
 .name {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
+    position: relative;
     margin: 0;
     text-transform: uppercase;
 }

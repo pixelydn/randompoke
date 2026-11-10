@@ -52,9 +52,9 @@ const bstChart = new Chart(bstCanvas, {
             ["HP", 0],
             ["Atk", 0],
             ["Def", 0],
-            ["Spe", 0],
-            ["SpD", 0],
             ["SpA", 0],
+            ["SpD", 0],
+            ["Spe", 0],
         ],
         datasets: [{
         label: "Base stats",
@@ -84,7 +84,10 @@ async function fetchSpecies(id) {
 
 async function fetchVarieties(species) {
     const varieties = species.varieties;
-    const variety = varieties[getRandomInt(0, varieties.length - 1)];
+
+    // koraidon and miraidon only get their default form (the ride forms have no gen 5 sprite)
+    const variety = species.id == 1007 || species.id == 1008 ? varieties[0] : 
+                    varieties[getRandomInt(0, varieties.length - 1)];
 
     return await fetchJson(variety.pokemon.url);
 }
@@ -96,12 +99,12 @@ function getRandomInt(min, max) {
 }
 
 // (258, "other/dream-world/", ".svg") => .../sprites/pokemon/other/dream-world/258.svg
-function getSpriteUrl(id, path, ext) {
+function getSpriteUrl(id, path, ext, allowFemale) {
     const spritePath = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
     return spritePath + 
-        path +
+        path + 
         (pokemon.shiny ? "shiny/" : "") +
-        (pokemon.hasGenderDifferences && pokemon.gender == "female" ? "female/" : "") +
+        (allowFemale && pokemon.hasGenderDifferences && pokemon.gender == "female" ? "female/" : "") + 
         id + 
         ext;
 }
@@ -139,17 +142,25 @@ function makePokemon(id) {
 
     // fallback order
     const spriteList = [
-        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/animated/", ".gif"),
-        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/", ".png"),
+        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/animated/", ".gif", true),
+        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/", ".png", true),
+
+        // if no female sprite exists
+        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/animated/", ".gif", false),
+        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/", ".png", false),
 
         // did some clac and it turns out thatit will never fallback to this
         // getSpriteUrl(pokemon.id, "other/dream-world/", ".svg"),
         // getSpriteUrl(pokemon.id, "", ".png"),
+
+        // my own sprites, only for mega zygarde
+        "https://pixelydn.github.io/pokesets/sprites/zygarde/zygarde-mega" + (pokemon.shiny ? "-shiny" : "") + ".png",
     ];
     let spriteIndex = 0;
 
     sprite.src = spriteList[0];
     sprite.alt = pokemon.name;
+    // sprite.style.scale = "2";
 
     // try the next sprite in the list until one loads
     sprite.onerror = function () {
@@ -201,8 +212,8 @@ function updateBSTChart() {
         pokemon.bst.hp,
         pokemon.bst.atk,
         pokemon.bst.def,
-        pokemon.bst.spd,
         pokemon.bst.spa,
+        pokemon.bst.spd,
         pokemon.bst.spe,
     ];
 
@@ -210,8 +221,8 @@ function updateBSTChart() {
         ["HP", pokemon.bst.hp],
         ["Atk", pokemon.bst.atk],
         ["Def", pokemon.bst.def],
-        ["SpD", pokemon.bst.spd],
         ["SpA", pokemon.bst.spa],
+        ["SpD", pokemon.bst.spd],
         ["Spe", pokemon.bst.spe],
     ];
 
