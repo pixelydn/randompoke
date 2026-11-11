@@ -9,6 +9,8 @@ const ivCanvas = document.querySelector(".iv-chart");
 const bstCanvas = document.querySelector(".bst-chart");
 const nature = document.querySelector(".nature");
 const dexNumber = document.querySelector(".dex-number");
+const primaryType = document.querySelector(".primary-type");
+const secondaryType = document.querySelector(".secondary-type");
 
 const natures = [
     "Bashful (+Sp. Atk, -Sp. Atk)", 
@@ -40,7 +42,7 @@ const natures = [
 
 // set chart.js fonts here
 Chart.defaults.font.family = "'Pixelify Sans', monospace";
-Chart.defaults.color = "white";
+Chart.defaults.color = '#B8F2A0';
 
 let pokemon = {};
 const shinyOdd = 4096;
@@ -178,18 +180,18 @@ function getRandomInt(min, max) {
 }
 
 // (586, "versions/generation-v/black-white/", ".png") => .../black-white/586-summer.png for a summer sawsbuck
-function getSpriteUrl(id, path, ext, allowFemale) {
+function getSpriteUrl(id, path, ext, allowFemale, allowSuffix) {
     const spritePath = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
     return spritePath + 
         path + 
         (pokemon.shiny ? "shiny/" : "") +
         (allowFemale && pokemon.hasGenderDifferences && pokemon.gender == "female" ? "female/" : "") + 
         id + 
-        pokemon.formSuffix +    // "" for normal forms, "-summer" etc for other looks
+        (allowSuffix ? pokemon.formSuffix : "") +    // "" for normal forms, "-summer" etc for other looks
         ext;
 }
 
-function getPokemon(id, species, varient) {
+function getPokemon(id, species, varient, form) {
     // very simplified here
     // I was using 'isShiny' and I do think it is better but 'shiny' fits better in an object 
 
@@ -201,13 +203,11 @@ function getPokemon(id, species, varient) {
 
     return {
         id: varient.id,
-        name: varient.name,
-        // check id there are at least 1 english name
-        displayName: speciesNames.length > 0 ? speciesNames[0].name : varient.name,
+        // check if there are at least 1 english name
+        name: speciesNames.length > 0 ? speciesNames[0].name : varient.name,
         dex: id,
-        dexEntry: speciesEntries.length > 0 ? randomItem(speciesEntries).flavor_text : "",
+        dexEntry: speciesEntries.length > 0 ? cleanText(randomItem(speciesEntries).flavor_text) : "",
         formSuffix: "",         // filled in by applyForm
-        formSprite: null,       // filled in by applyForm
         gender: getPokemonGender(species.gender_rate),
         hasGenderDifferences: species.has_gender_differences,
         ivs: {
@@ -227,6 +227,12 @@ function getPokemon(id, species, varient) {
             spd: varient.stats[4].base_stat,
             spe: varient.stats[5].base_stat,
         },
+        primaryType: form.types[0].type.name,
+        secondaryType: form.types.length > 1 ? form.types[1].type.name : "",
+        // ID order 1-18
+        // normal, fighting, flying, poison, ground, rock, bug, ghost, steel, fire, water, grass, electric, psychic, ice, dragon, dark, fairy
+        primaryTypeID: getTypeId(form.types[0].type.url),
+        secondaryTypeID: getTypeId(form.types.length > 1 ? form.types[1].type.url : ""),
         shiny: getRandomInt(1, shinyOdd) == 1,
         color: species.color.name,
     }
@@ -236,7 +242,7 @@ function getPokemon(id, species, varient) {
 function applyForm(form) {
     // nicer name, like Alolan Rattata
     const formNames = getEnglish(form.names);
-    pokemon.displayName = formNames.length > 0 ? formNames[0].name : pokemon.displayName;
+    pokemon.name = formNames.length > 0 ? formNames[0].name : pokemon.name;
 
     // regional forms could have their own dex entries
     // check if they do, then replace it
@@ -246,7 +252,18 @@ function applyForm(form) {
     // non default forms need a suffix
     // sawsbuck-summer will now have the -summer suffix at the sprite
     pokemon.formSuffix = form.is_default ? "" : "-" + form.form_name;
+
+    // avoid female forms with male gender and vise versa
+    pokemon.gender = form.name.endsWith("-female") ? "female" : 
+                     form.name.endsWith("-male") ? pokemon.gender = "male" : 
+                     pokemon.gender;
+
+    // note: 
+        // form.names is the display name with captialization 
+        // form.form_name is lowercase with dashes uses for sprites
 }
+
+//helpers here
 
 // old game text has hidden line breaks (\n) and page breaks (\f), turn them into spaces
 function cleanText(text) {
@@ -258,16 +275,30 @@ function randomItem(list) {
     return list[getRandomInt(0, list.length - 1)];
 }
 
+// "https://pokeapi.co/api/v2/type/12/" => "12"
+function getTypeId(url) {
+    return url.replace("https://pokeapi.co/api/v2/type/", "").replaceAll("/", "");
+}
+
 function makePokemon(id) {
 
     // fallback order
+    // this sytems is getting more and more broken
     const spriteList = [
-        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/animated/", ".gif", true),
-        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/", ".png", true),
+        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/animated/", ".gif", true, true),
+        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/", ".png", true, true),
 
         // if no female sprite exists
-        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/animated/", ".gif", false),
-        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/", ".png", false),
+        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/animated/", ".gif", false, true),
+        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/", ".png", false, true),
+
+        // if no form sprite exists
+        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/animated/", ".gif", true, false),
+        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/", ".png", true, false),
+
+        // if nothing exists
+        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/animated/", ".gif", false, false),
+        getSpriteUrl(pokemon.id, "versions/generation-v/black-white/", ".png", false, false),
 
         // did some clac and it turns out thatit will never fallback to this
         // getSpriteUrl(pokemon.id, "other/dream-world/", ".svg"),
@@ -306,12 +337,21 @@ function makePokemon(id) {
     nature.innerHTML = pokemon.nature;
 
     dexNumber.innerHTML = "# " + pokemon.dex;
+    //for the only stellar pokemon
+    primaryType.src = pokemon.id == "10277" ? "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/19.png" : 
+                      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/champions/" + pokemon.primaryTypeID +".png";
+    primaryType.alt = pokemon.id == "10277" ? "stellar" : 
+                      pokemon.primaryType;
+    secondaryType.src = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/champions/" + pokemon.secondaryTypeID +".png";
+    secondaryType.alt = pokemon.secondaryType;
+    // second type badge space will be taken
+    secondaryType.style.display = pokemon.secondaryType == "" ? "none" : "block";
 
     color.style.backgroundColor = pokemon.color;
     shinyIcon.style.visibility = pokemon.shiny ? "visible" : "hidden";
     sprite.style.visibility = "visible";
 
-    name.innerHTML = pokemon.displayName;
+    name.innerHTML = pokemon.name;
 }
 
 function updateIVChart() {
@@ -367,7 +407,7 @@ function getPokemonGender(rate) {
 
 async function generate() {
     const id = getRandomInt(1, 1025);
-    // const id = 806  // testing use
+    // const id = 676  // testing use
 
     const species = await fetchSpecies(id);
     console.log(species);
@@ -378,8 +418,8 @@ async function generate() {
     const form = await fetchForm(variant);
     console.log(form);
 
+    pokemon = getPokemon(id, species, variant, form);
     // form overwrites existing data
-    pokemon = getPokemon(id, species, variant);
     applyForm(form);
 
     console.log(pokemon);
