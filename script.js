@@ -142,10 +142,33 @@ async function fetchVarieties(species) {
     const varieties = species.varieties;
 
     // koraidon and miraidon only get their default form (the ride forms have no gen 5 sprite)
+    // varieties[0] is the 1st entry, default form
     const variety = species.id == 1007 || species.id == 1008 ? varieties[0] : 
-                    varieties[getRandomInt(0, varieties.length - 1)];
+                    randomItem(varieties);
 
     return await fetchJson(variety.pokemon.url);
+}
+
+// variant => the data for one random look (e.g. sawsbuck-summer, unown-b)
+async function fetchForm(variant) {
+    const forms = variant.forms;
+    const form = randomItem(forms);
+
+    // always use the url pokeapi gives us, form ids are NOT the same as variant ids
+    return await fetchJson(form.url);
+}
+
+// loop over every entry for the english one
+function getEnglish(list) {
+    const result = [];
+
+    for (const entry of list) {
+        if (entry.language.name == "en") {
+            result.push(entry);
+        }
+    }
+
+    return result;
 }
 
 function getRandomInt(min, max) {
@@ -154,7 +177,7 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// (258, "other/dream-world/", ".svg") => .../sprites/pokemon/other/dream-world/258.svg
+// (586, "versions/generation-v/black-white/", ".png") => .../black-white/586-summer.png for a summer sawsbuck
 function getSpriteUrl(id, path, ext, allowFemale) {
     const spritePath = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
     return spritePath + 
@@ -162,16 +185,29 @@ function getSpriteUrl(id, path, ext, allowFemale) {
         (pokemon.shiny ? "shiny/" : "") +
         (allowFemale && pokemon.hasGenderDifferences && pokemon.gender == "female" ? "female/" : "") + 
         id + 
+        pokemon.formSuffix +    // "" for normal forms, "-summer" etc for other looks
         ext;
 }
 
 function getPokemon(id, species, varient) {
     // very simplified here
     // I was using 'isShiny' and I do think it is better but 'shiny' fits better in an object 
+
+    // english name from the species, e.g. "Rattata"
+    // located in the 1st item, accessed by [0]
+    const speciesNames = getEnglish(species.names);
+    // english dex entries from the species, the last one is the newest game
+    const speciesEntries = getEnglish(species.flavor_text_entries);
+
     return {
         id: varient.id,
         name: varient.name,
+        // check id there are at least 1 english name
+        displayName: speciesNames.length > 0 ? speciesNames[0].name : varient.name,
         dex: id,
+        dexEntry: speciesEntries.length > 0 ? randomItem(speciesEntries).flavor_text : "",
+        formSuffix: "",         // filled in by applyForm
+        formSprite: null,       // filled in by applyForm
         gender: getPokemonGender(species.gender_rate),
         hasGenderDifferences: species.has_gender_differences,
         ivs: {
@@ -182,7 +218,7 @@ function getPokemon(id, species, varient) {
             spd: getRandomInt(0, 31),
             spe: getRandomInt(0, 31),
         },
-        nature: natures[getRandomInt(0, natures.length - 1)],
+        nature: randomItem(natures),
         bst: {
             hp: varient.stats[0].base_stat,
             atk: varient.stats[1].base_stat,
@@ -194,6 +230,32 @@ function getPokemon(id, species, varient) {
         shiny: getRandomInt(1, shinyOdd) == 1,
         color: species.color.name,
     }
+}
+
+// if form has extra stuff in it overwrite the entries
+function applyForm(form) {
+    // nicer name, like Alolan Rattata
+    const formNames = getEnglish(form.names);
+    pokemon.displayName = formNames.length > 0 ? formNames[0].name : pokemon.displayName;
+
+    // regional forms could have their own dex entries
+    // check if they do, then replace it
+    const formEntries = getEnglish(form.flavor_text_entries);
+    pokemon.dexEntry = formEntries.length > 0 ? cleanText(randomItem(formEntries).flavor_text) : pokemon.dexEntry;
+
+    // non default forms need a suffix
+    // sawsbuck-summer will now have the -summer suffix at the sprite
+    pokemon.formSuffix = form.is_default ? "" : "-" + form.form_name;
+}
+
+// old game text has hidden line breaks (\n) and page breaks (\f), turn them into spaces
+function cleanText(text) {
+    return text.replaceAll("\n", " ").replaceAll("\f", " ");
+}
+
+// ["a", "b", "c"] => one of them, picked at random
+function randomItem(list) {
+    return list[getRandomInt(0, list.length - 1)];
 }
 
 function makePokemon(id) {
@@ -211,9 +273,14 @@ function makePokemon(id) {
         // getSpriteUrl(pokemon.id, "other/dream-world/", ".svg"),
         // getSpriteUrl(pokemon.id, "", ".png"),
 
-        // my own sprites, only for mega zygarde
-        "https://pixelydn.github.io/pokesets/sprites/zygarde/zygarde-mega" + (pokemon.shiny ? "-shiny" : "") + ".png",
     ];
+
+    // push to add items to a list
+    // my own sprites, only for mega zygarde, variant number 10301
+    if (pokemon.id == 10301) {
+        spriteList.push("https://pixelydn.github.io/pokesets/sprites/zygarde/zygarde-mega" + (pokemon.shiny ? "-shiny" : "") + ".png");
+    }
+
     let spriteIndex = 0;
 
     sprite.src = spriteList[0];
@@ -244,7 +311,7 @@ function makePokemon(id) {
     shinyIcon.style.visibility = pokemon.shiny ? "visible" : "hidden";
     sprite.style.visibility = "visible";
 
-    name.innerHTML = pokemon.name
+    name.innerHTML = pokemon.displayName;
 }
 
 function updateIVChart() {
@@ -308,7 +375,13 @@ async function generate() {
     const variant = await fetchVarieties(species);
     console.log(variant);
 
+    const form = await fetchForm(variant);
+    console.log(form);
+
+    // form overwrites existing data
     pokemon = getPokemon(id, species, variant);
+    applyForm(form);
+
     console.log(pokemon);
 
     makePokemon(id);
