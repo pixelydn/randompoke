@@ -4,6 +4,7 @@ const button = document.querySelector(".generate");
 const gender = document.querySelector(".gender");
 const name = document.querySelector(".name");
 const color = document.querySelector(".color");
+const cry = document.querySelector(".cry");
 const shinyIcon = document.querySelector(".shiny-icon");
 const ivCanvas = document.querySelector(".iv-chart");
 const bstCanvas = document.querySelector(".bst-chart");
@@ -241,6 +242,7 @@ function getPokemon(id, species, varient, form) {
         primaryTypeID: getTypeId(form.types[0].type.url),
         secondaryTypeID: getTypeId(form.types.length > 1 ? form.types[1].type.url : ""),
         genus: genus[0].genus,
+        cry: new Audio(varient.cries.latest),
         shiny: getRandomInt(1, shinyOdd) == 1,
         color: species.color.name,
     }
@@ -420,8 +422,8 @@ function getPokemonGender(rate) {
 }
 
 async function generate() {
-    // const id = getRandomInt(1, 1025);
-    const id = 25  // testing use
+    const id = getRandomInt(1, 1025);
+    // const id = 25  // testing use
 
     const species = await fetchSpecies(id);
     console.log(species);
@@ -443,3 +445,17 @@ async function generate() {
     updateBSTChart();
 }
 button.onclick = generate;
+
+function cryHover() {
+    cry.src = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/emerald/animated/294.png"
+}
+
+function cryUnhover() {
+    cry.src = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/ruby-sapphire/294.png"
+}
+
+cry.onmouseover = cryHover;
+cry.onmouseout = cryUnhover;
+cry.onclick = function () {
+    pokemon.cry.play();
+};
