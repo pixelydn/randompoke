@@ -11,6 +11,9 @@ const nature = document.querySelector(".nature");
 const dexNumber = document.querySelector(".dex-number");
 const primaryType = document.querySelector(".primary-type");
 const secondaryType = document.querySelector(".secondary-type");
+const genus = document.querySelector(".genus");
+const dexEntry = document.querySelector(".dex-entry");
+const dexGame = document.querySelector(".dex-game");
 
 const natures = [
     "Bashful (+Sp. Atk, -Sp. Atk)", 
@@ -200,13 +203,17 @@ function getPokemon(id, species, varient, form) {
     const speciesNames = getEnglish(species.names);
     // english dex entries from the species, the last one is the newest game
     const speciesEntries = getEnglish(species.flavor_text_entries);
+    const dexEntries = randomItem(speciesEntries);
+    // english genus of the pokemon
+    const genus = getEnglish(species.genera);
 
     return {
         id: varient.id,
         // check if there are at least 1 english name
         name: speciesNames.length > 0 ? speciesNames[0].name : varient.name,
         dex: id,
-        dexEntry: speciesEntries.length > 0 ? cleanText(randomItem(speciesEntries).flavor_text) : "",
+        dexEntry: speciesEntries.length > 0 ? cleanText(dexEntries.flavor_text) : "",
+        game: speciesEntries.length > 0 ? cleanText(dexEntries.version.name).replaceAll("-", " ") : "",
         formSuffix: "",         // filled in by applyForm
         gender: getPokemonGender(species.gender_rate),
         hasGenderDifferences: species.has_gender_differences,
@@ -233,6 +240,7 @@ function getPokemon(id, species, varient, form) {
         // normal, fighting, flying, poison, ground, rock, bug, ghost, steel, fire, water, grass, electric, psychic, ice, dragon, dark, fairy
         primaryTypeID: getTypeId(form.types[0].type.url),
         secondaryTypeID: getTypeId(form.types.length > 1 ? form.types[1].type.url : ""),
+        genus: genus[0].genus,
         shiny: getRandomInt(1, shinyOdd) == 1,
         color: species.color.name,
     }
@@ -242,6 +250,7 @@ function getPokemon(id, species, varient, form) {
 function applyForm(form) {
     // nicer name, like Alolan Rattata
     const formNames = getEnglish(form.names);
+    // there should only be 1 name so no random needed 
     pokemon.name = formNames.length > 0 ? formNames[0].name : pokemon.name;
 
     // regional forms could have their own dex entries
@@ -255,8 +264,8 @@ function applyForm(form) {
 
     // avoid female forms with male gender and vise versa
     pokemon.gender = form.name.endsWith("-female") ? "female" : 
-                     form.name.endsWith("-male") ? pokemon.gender = "male" : 
-                     pokemon.gender;
+                        form.name.endsWith("-male") ? pokemon.gender = "male" : 
+                        pokemon.gender;
 
     // note: 
         // form.names is the display name with captialization 
@@ -283,7 +292,7 @@ function getTypeId(url) {
 function makePokemon(id) {
 
     // fallback order
-    // this sytems is getting more and more broken
+    // this systems is getting more and more broken
     const spriteList = [
         getSpriteUrl(pokemon.id, "versions/generation-v/black-white/animated/", ".gif", true, true),
         getSpriteUrl(pokemon.id, "versions/generation-v/black-white/", ".png", true, true),
@@ -339,13 +348,18 @@ function makePokemon(id) {
     dexNumber.innerHTML = "# " + pokemon.dex;
     //for the only stellar pokemon
     primaryType.src = pokemon.id == "10277" ? "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/19.png" : 
-                      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/champions/" + pokemon.primaryTypeID +".png";
+                        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/champions/" + pokemon.primaryTypeID +".png";
     primaryType.alt = pokemon.id == "10277" ? "stellar" : 
-                      pokemon.primaryType;
+                        pokemon.primaryType;
     secondaryType.src = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/champions/" + pokemon.secondaryTypeID +".png";
     secondaryType.alt = pokemon.secondaryType;
     // second type badge space will be taken
     secondaryType.style.display = pokemon.secondaryType == "" ? "none" : "block";
+
+    genus.innerHTML = pokemon.genus;
+    // if you inspect you can see double quotation marks
+    dexEntry.innerHTML = '"' + pokemon.dexEntry + '"';
+    dexGame.innerHTML = "- Pok&eacute;mon " + pokemon.game;
 
     color.style.backgroundColor = pokemon.color;
     shinyIcon.style.visibility = pokemon.shiny ? "visible" : "hidden";
@@ -406,8 +420,8 @@ function getPokemonGender(rate) {
 }
 
 async function generate() {
-    const id = getRandomInt(1, 1025);
-    // const id = 676  // testing use
+    // const id = getRandomInt(1, 1025);
+    const id = 25  // testing use
 
     const species = await fetchSpecies(id);
     console.log(species);

@@ -35,6 +35,10 @@ body {
 
 /* the red pokedex, halves side by side */
 .pokedex {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
     display: flex;
     /* gap: 1rem; */
     width: fit-content;
@@ -252,6 +256,22 @@ body {
 .bst-canvas {
     width: 25rem;
     position: relative;
+}
+
+.genus-dex {
+    margin-top: 2rem;
+    padding: 1rem;
+    align-items: flex-end;
+    height: 11rem;
+}
+
+.dex-game {
+    text-transform: capitalize;
+    display: flex;
+    align-items: self-end;
+    justify-content: flex-end;
+    align-self: flex-end;
+    flex-grow: 2;
 }
 
 .generate {
