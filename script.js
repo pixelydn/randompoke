@@ -164,6 +164,18 @@ async function fetchForm(variant) {
     return await fetchJson(form.url);
 }
 
+// Great Saturday afternoon spent doing this, what is wrong with me
+// my eyes are hurting now, maybe I should go outside 
+async function fetchAbility(variant) {
+    const picked = getAbilities(variant);
+    const ability = await fetchJson(picked.ability.url);
+
+    // add the isHidden data and pass it over
+    ability.isHidden = picked.is_hidden;
+
+    return ability;
+}
+
 // loop over every entry for the english one
 function getEnglish(list) {
     const result = [];
@@ -175,6 +187,23 @@ function getEnglish(list) {
     }
 
     return result;
+}
+
+// a direct copy of getEnglish to grab the latest ability desc cuz ALL old ones SUCK
+// use this after getEnglish if possible
+function getLatest(list) {
+
+    // if there is an entry for SV use that
+    // just to evade a data error in teal mask dlc
+    for (const entry of list) {
+        if (entry.version_group.name == "scarlet-violet") {
+            return entry
+        }
+    }
+
+    // if no SV entry use the latest one
+    // I could have just done this if it wasnt for the bug
+    return list[list.length - 1];
 }
 
 function getRandomInt(min, max) {
@@ -195,23 +224,26 @@ function getSpriteUrl(id, path, ext, allowFemale, allowSuffix) {
         ext;
 }
 
-function getPokemon(id, species, varient, form) {
+function getPokemon(id, species, variant, form, ability) {
     // very simplified here
     // I was using 'isShiny' and I do think it is better but 'shiny' fits better in an object 
 
     // english name from the species, e.g. "Rattata"
     // located in the 1st item, accessed by [0]
     const speciesNames = getEnglish(species.names);
+
     // english dex entries from the species, the last one is the newest game
     const speciesEntries = getEnglish(species.flavor_text_entries);
+    // pick a random one
     const dexEntries = randomItem(speciesEntries);
+
     // english genus of the pokemon
     const genus = getEnglish(species.genera);
 
     return {
-        id: varient.id,
+        id: variant.id,
         // check if there are at least 1 english name
-        name: speciesNames.length > 0 ? speciesNames[0].name : varient.name,
+        name: speciesNames.length > 0 ? speciesNames[0].name : variant.name,
         dex: id,
         dexEntry: speciesEntries.length > 0 ? cleanText(dexEntries.flavor_text) : "",
         game: speciesEntries.length > 0 ? cleanText(dexEntries.version.name).replaceAll("-", " ") : "",
@@ -228,12 +260,12 @@ function getPokemon(id, species, varient, form) {
         },
         nature: randomItem(natures),
         bst: {
-            hp: varient.stats[0].base_stat,
-            atk: varient.stats[1].base_stat,
-            def: varient.stats[2].base_stat,
-            spa: varient.stats[3].base_stat,
-            spd: varient.stats[4].base_stat,
-            spe: varient.stats[5].base_stat,
+            hp: variant.stats[0].base_stat,
+            atk: variant.stats[1].base_stat,
+            def: variant.stats[2].base_stat,
+            spa: variant.stats[3].base_stat,
+            spd: variant.stats[4].base_stat,
+            spe: variant.stats[5].base_stat,
         },
         primaryType: form.types[0].type.name,
         secondaryType: form.types.length > 1 ? form.types[1].type.name : "",
@@ -242,7 +274,11 @@ function getPokemon(id, species, varient, form) {
         primaryTypeID: getTypeId(form.types[0].type.url),
         secondaryTypeID: getTypeId(form.types.length > 1 ? form.types[1].type.url : ""),
         genus: genus[0].genus,
-        cry: new Audio(varient.cries.latest),
+        cry: new Audio(variant.cries.latest),
+        ability: getEnglish(ability.names)[0].name,
+        // wow that is a lot of helper functions and buckets
+        abilityDesc: cleanText(getLatest(getEnglish(ability.flavor_text_entries)).flavor_text),
+        isHidden: ability.isHidden,
         shiny: getRandomInt(1, shinyOdd) == 1,
         color: species.color.name,
     }
@@ -289,6 +325,51 @@ function randomItem(list) {
 // "https://pokeapi.co/api/v2/type/12/" => "12"
 function getTypeId(url) {
     return url.replace("https://pokeapi.co/api/v2/type/", "").replaceAll("/", "");
+}
+
+// feel like these two ability functions should switch place
+// edit: switched, new function has been written
+// get hidden should be part of random ability
+
+// 1 in 128 chance for hidden ability
+// function getAbilities(variant) {
+//     const rng = getRandomInt(1, 128);
+//     const isHidden = rng == 128 ? true : false;
+//     return randomAbility(variant, isHidden);
+// }
+
+// // pick a random ability, takes hidden abilities into account
+// function randomAbility(variant, isHidden) {
+//     const result = [];
+
+//     for (const entry of variant.abilities) {
+//         if (entry.is_hidden == isHidden) {
+//             result.push(entry);
+//         }
+//     }
+
+//     return randomItem(result);
+// }
+
+function getAbilities(variant) {
+    const isHidden = getHidden();
+
+    const result = [];
+
+    for (const entry of variant.abilities) {
+        if (entry.is_hidden == isHidden) {
+            result.push(entry);
+        }
+    }
+
+    // fallback for mons that have no hidden ability
+    // return result.length == 0 ? randomItem(variant.abilities) :randomItem(result);
+    return randomItem(result.length == 0 ? variant.abilities : result);
+}
+
+function getHidden() {
+    const rng = getRandomInt(1, 128);
+    return rng == 128 ? true : false;
 }
 
 function makePokemon(id) {
@@ -434,7 +515,10 @@ async function generate() {
     const form = await fetchForm(variant);
     console.log(form);
 
-    pokemon = getPokemon(id, species, variant, form);
+    const ability = await fetchAbility(variant);
+    console.log(ability);
+
+    pokemon = getPokemon(id, species, variant, form, ability);
     // form overwrites existing data
     applyForm(form);
 
