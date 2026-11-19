@@ -15,34 +15,64 @@ const secondaryType = document.querySelector(".secondary-type");
 const genus = document.querySelector(".genus");
 const dexEntry = document.querySelector(".dex-entry");
 const dexGame = document.querySelector(".dex-game");
+const ability = document.querySelector(".ability");
+const abilityDesc = document.querySelector(".ability-desc");
+const stats = document.querySelectorAll(".stat");
+const height = document.querySelector(".height");
+const weight = document.querySelector(".weight");
+const catchRate = document.querySelector(".catch-rate");
+const baseFriendship = document.querySelector(".base-friendship");
+const growthRate = document.querySelector(".growth-rate");
+const eggGroup = document.querySelector(".egg-group");
+const covers = document.querySelectorAll(".cover");
+const pokeball = document.querySelectorAll(".pokeball");
 
 const natures = [
-    "Bashful (+Sp. Atk, -Sp. Atk)", 
-    "Docile (+Defense, -Defense)", 
-    "Hardy (+Attack, -Attack)", 
-    "Quirky (+Sp. Def, -Sp. Def)", 
-    "Serious (+Speed, -Speed)", 
-    "Adamant (+Attack, -Sp. Atk)", 
-    "Brave (+Attack, -Speed)", 
-    "Lonely (+Attack, -Defense)", 
-    "Naughty (+Attack, -Sp. Def)", 
-    "Bold (+Defense, -Attack)", 
-    "Impish (+Defense, -Sp. Atk)", 
-    "Lax (+Defense, -Sp. Def)", 
-    "Relaxed (+Defense, -Speed)", 
-    "Mild (+Sp. Atk, -Defense)", 
-    "Modest (+Sp. Atk, -Attack)", 
-    "Quiet (+Sp. Atk, -Speed)", 
-    "Rash (+Sp. Atk, -Sp. Def)", 
-    "Calm (+Sp. Def, -Attack)", 
-    "Careful (+Sp. Def, -Sp. Atk)", 
-    "Gentle (+Sp. Def, -Defense)", 
-    "Sassy (+Sp. Def, -Speed)", 
-    "Hasty (+Speed, -Defense)", 
-    "Jolly (+Speed, -Sp. Atk)", 
-    "Naive (+Speed, -Sp. Def)", 
+    "Bashful (+Sp. Atk, -Sp. Atk)",
+    "Docile (+Defense, -Defense)",
+    "Hardy (+Attack, -Attack)",
+    "Quirky (+Sp. Def, -Sp. Def)",
+    "Serious (+Speed, -Speed)",
+    "Adamant (+Attack, -Sp. Atk)",
+    "Brave (+Attack, -Speed)",
+    "Lonely (+Attack, -Defense)",
+    "Naughty (+Attack, -Sp. Def)",
+    "Bold (+Defense, -Attack)",
+    "Impish (+Defense, -Sp. Atk)",
+    "Lax (+Defense, -Sp. Def)",
+    "Relaxed (+Defense, -Speed)",
+    "Mild (+Sp. Atk, -Defense)",
+    "Modest (+Sp. Atk, -Attack)",
+    "Quiet (+Sp. Atk, -Speed)",
+    "Rash (+Sp. Atk, -Sp. Def)",
+    "Calm (+Sp. Def, -Attack)",
+    "Careful (+Sp. Def, -Sp. Atk)",
+    "Gentle (+Sp. Def, -Defense)",
+    "Sassy (+Sp. Def, -Speed)",
+    "Hasty (+Speed, -Defense)",
+    "Jolly (+Speed, -Sp. Atk)",
+    "Naive (+Speed, -Sp. Def)",
     "Timid (+Speed, -Attack)",
 ];
+
+const eggGroupNames = [
+    "404",
+    "Monster",
+    "Water 1",
+    "Bug",
+    "Flying",
+    "Field",
+    "Fairy",
+    "Grass",
+    "Human-Like",
+    "Water 3",
+    "Mineral",
+    "Amorphous",
+    "Water 2",
+    "Ditto",
+    "Dragon",
+    "Undiscovered",
+]
 
 // set chart.js fonts here
 Chart.defaults.font.family = "'Pixelify Sans', monospace";
@@ -63,7 +93,7 @@ const ivChart = new Chart(ivCanvas, {
             ["SpD", 0],
             ["SpA", 0],
         ],
-        datasets: [{                                        // <== path to here is ivChart.data.datasets[0].data
+        datasets: [{ // <== path to here is ivChart.data.datasets[0].data
             label: "IV",
             // init to 0
             data: [0, 0, 0, 0, 0, 0],
@@ -74,16 +104,26 @@ const ivChart = new Chart(ivCanvas, {
     },
     options: {
         plugins: {
-            legend: { display: false },
+            legend: {
+                display: false
+            },
         },
         scales: {
             r: {
                 min: 0,
                 max: 31,
-                ticks: { display: false },
-                grid: { color: "white" },
-                angleLines: { color: "white" },
-                pointLabels: { color: "white" },
+                ticks: {
+                    display: false
+                },
+                grid: {
+                    color: "white"
+                },
+                angleLines: {
+                    color: "white"
+                },
+                pointLabels: {
+                    color: "white"
+                },
             },
         },
     },
@@ -94,36 +134,42 @@ const bstChart = new Chart(bstCanvas, {
     data: {
         labels: [0, 0, 0, 0, 0, 0],
         datasets: [{
-        label: "Base Stat",
-        data: [0, 0, 0, 0, 0, 0],
-        backgroundColor: "white",
+            label: "Base Stat",
+            data: [0, 0, 0, 0, 0, 0],
+            backgroundColor: "white",
         }],
     },
     options: {
         maintainAspectRatio: false, // use my scaling
         indexAxis: "y", // vertically stacking
         plugins: {
-            legend: { display: false },
+            legend: {
+                display: false
+            },
         },
         scales: {
             x: {
                 min: 0,
                 max: 255,
                 ticks: {
-                    display: false, 
+                    display: false,
                     stepSize: 50,
                 },
-                border: { display: false },
+                border: {
+                    display: false
+                },
                 grid: {
                     color: "rgba(255, 255, 255, 0.25)",
                     drawTicks: false,
                 },
             },
             y: {
-                grid: { display: false },
+                grid: {
+                    display: false
+                },
                 ticks: {
                     color: "white",
-                    crossAlign: "far",  // left align the numbers
+                    crossAlign: "far", // left align the numbers
                 },
                 // lock the number column width so the bars don't shift
                 afterFit: function (scale) {
@@ -149,8 +195,8 @@ async function fetchVarieties(species) {
 
     // koraidon and miraidon only get their default form (the ride forms have no gen 5 sprite)
     // varieties[0] is the 1st entry, default form
-    const variety = species.id == 1007 || species.id == 1008 ? varieties[0] : 
-                    randomItem(varieties);
+    const variety = species.id == 1007 || species.id == 1008 ? varieties[0] :
+        randomItem(varieties);
 
     return await fetchJson(variety.pokemon.url);
 }
@@ -175,6 +221,15 @@ async function fetchAbility(variant) {
 
     return ability;
 }
+
+// WHY DOES POKEMON CHANG INDETERMINATE TO AMORPHOUS EGG GROUP
+// AND WHY DOESNT POKEAPI CHANGE WITH IT
+// NOW I HAVE TO DO 1 MORE FETCHING JUST FOR 1 STAT
+// IF I DONT THE NAMES WILL BE WRONG!!!!!!!!!!!
+// async function fetchEggGroup(species) {
+//     return await fetchJson(species.egg_groups.url)
+// }
+// mons can have 2 egg groups anyways there are no point of fetching it
 
 // loop over every entry for the english one
 function getEnglish(list) {
@@ -203,6 +258,8 @@ function getLatest(list) {
 
     // if no SV entry use the latest one
     // I could have just done this if it wasnt for the bug
+    // https://github.com/PokeAPI/pokeapi/issues/1724
+    // update 11-15: someone submitted a PR fixing it (and a lot of other issues wow)
     return list[list.length - 1];
 }
 
@@ -215,12 +272,12 @@ function getRandomInt(min, max) {
 // (586, "versions/generation-v/black-white/", ".png") => .../black-white/586-summer.png for a summer sawsbuck
 function getSpriteUrl(id, path, ext, allowFemale, allowSuffix) {
     const spritePath = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
-    return spritePath + 
-        path + 
+    return spritePath +
+        path +
         (pokemon.shiny ? "shiny/" : "") +
-        (allowFemale && pokemon.hasGenderDifferences && pokemon.gender == "female" ? "female/" : "") + 
-        id + 
-        (allowSuffix ? pokemon.formSuffix : "") +    // "" for normal forms, "-summer" etc for other looks
+        (allowFemale && pokemon.hasGenderDifferences && pokemon.gender == "female" ? "female/" : "") +
+        id +
+        (allowSuffix ? pokemon.formSuffix : "") + // "" for normal forms, "-summer" etc for other looks
         ext;
 }
 
@@ -247,7 +304,7 @@ function getPokemon(id, species, variant, form, ability) {
         dex: id,
         dexEntry: speciesEntries.length > 0 ? cleanText(dexEntries.flavor_text) : "",
         game: speciesEntries.length > 0 ? cleanText(dexEntries.version.name).replaceAll("-", " ") : "",
-        formSuffix: "",         // filled in by applyForm
+        formSuffix: "", // filled in by applyForm
         gender: getPokemonGender(species.gender_rate),
         hasGenderDifferences: species.has_gender_differences,
         ivs: {
@@ -271,13 +328,21 @@ function getPokemon(id, species, variant, form, ability) {
         secondaryType: form.types.length > 1 ? form.types[1].type.name : "",
         // ID order 1-18
         // normal, fighting, flying, poison, ground, rock, bug, ghost, steel, fire, water, grass, electric, psychic, ice, dragon, dark, fairy
-        primaryTypeID: getTypeId(form.types[0].type.url),
-        secondaryTypeID: getTypeId(form.types.length > 1 ? form.types[1].type.url : ""),
+        primaryTypeID: getID(form.types[0].type.url, "type"),
+        secondaryTypeID: getID(form.types.length > 1 ? form.types[1].type.url : "", "type"),
         genus: genus[0].genus,
         cry: new Audio(variant.cries.latest),
         ability: getEnglish(ability.names)[0].name,
-        // wow that is a lot of helper functions and buckets
+        // wow that is a lot of helper functions and brackets
         abilityDesc: cleanText(getLatest(getEnglish(ability.flavor_text_entries)).flavor_text),
+        height: getDecimal(variant.height),
+        weight: getDecimal(variant.weight),
+        catchRate: species.capture_rate,
+        // 70 => 50 idk man
+        // this is gonna be gen 7 stats
+        baseFriendship: species.base_happiness,
+        growthRate: species.growth_rate.name.replaceAll("-", " "),
+        eggGroup: getEggGroup(species),
         isHidden: ability.isHidden,
         shiny: getRandomInt(1, shinyOdd) == 1,
         color: species.color.name,
@@ -294,20 +359,21 @@ function applyForm(form) {
     // regional forms could have their own dex entries
     // check if they do, then replace it
     const formEntries = getEnglish(form.flavor_text_entries);
-    pokemon.dexEntry = formEntries.length > 0 ? cleanText(randomItem(formEntries).flavor_text) : pokemon.dexEntry;
+    pokemon.dexEntry = formEntries.length > 0 ? cleanText(randomItem(formEntries).flavor_text) : pokemon
+        .dexEntry;
 
     // non default forms need a suffix
     // sawsbuck-summer will now have the -summer suffix at the sprite
     pokemon.formSuffix = form.is_default ? "" : "-" + form.form_name;
 
     // avoid female forms with male gender and vise versa
-    pokemon.gender = form.name.endsWith("-female") ? "female" : 
-                        form.name.endsWith("-male") ? pokemon.gender = "male" : 
-                        pokemon.gender;
+    pokemon.gender = form.name.endsWith("-female") ? "female" :
+        form.name.endsWith("-male") ? pokemon.gender = "male" :
+        pokemon.gender;
 
     // note: 
-        // form.names is the display name with captialization 
-        // form.form_name is lowercase with dashes uses for sprites
+    // form.names is the display name with captialization 
+    // form.form_name is lowercase with dashes uses for sprites
 }
 
 //helpers here
@@ -323,8 +389,22 @@ function randomItem(list) {
 }
 
 // "https://pokeapi.co/api/v2/type/12/" => "12"
-function getTypeId(url) {
-    return url.replace("https://pokeapi.co/api/v2/type/", "").replaceAll("/", "");
+function getID(url, input) {
+    return url.replace("https://pokeapi.co/api/v2/", "").replace(input, "").replaceAll("/", "");
+}
+
+// pokeapi number lack a decimal point
+// 300 => 30.0
+// function getDecimal(num) {
+//     // split the number to everything else and the last digit
+//     // then insert a . in between before joining them
+//     num = String(num);
+//     return num.slice(0, -1) + "." + num.slice(-1);
+// }
+function getDecimal(num) {
+    // yo me yesterday, just do this
+    // keep 0.7 from being turned in .7 as well
+    return (num / 10).toFixed(1);
 }
 
 // feel like these two ability functions should switch place
@@ -372,6 +452,17 @@ function getHidden() {
     return rng == 128 ? true : false;
 }
 
+function getEggGroup(species) {
+    const names = [];
+
+    for (const entry of species.egg_groups) {
+        // the bug making it not working was I forgot a parameter haha
+        names.push(eggGroupNames[getID(entry.url, "egg-group")]);
+    }
+
+    return names.join(", ");
+}
+
 function makePokemon(id) {
 
     // fallback order
@@ -392,7 +483,7 @@ function makePokemon(id) {
         getSpriteUrl(pokemon.id, "versions/generation-v/black-white/animated/", ".gif", false, false),
         getSpriteUrl(pokemon.id, "versions/generation-v/black-white/", ".png", false, false),
 
-        // did some clac and it turns out thatit will never fallback to this
+        // did some calc and it turns out thatit will never fallback to this
         // getSpriteUrl(pokemon.id, "other/dream-world/", ".svg"),
         // getSpriteUrl(pokemon.id, "", ".png"),
 
@@ -401,7 +492,8 @@ function makePokemon(id) {
     // push to add items to a list
     // my own sprites, only for mega zygarde, variant number 10301
     if (pokemon.id == 10301) {
-        spriteList.push("https://pixelydn.github.io/pokesets/sprites/zygarde/zygarde-mega" + (pokemon.shiny ? "-shiny" : "") + ".png");
+        spriteList.push("https://pixelydn.github.io/pokesets/sprites/zygarde/zygarde-mega" + (pokemon.shiny ?
+            "-shiny" : "") + ".png");
     }
 
     let spriteIndex = 0;
@@ -430,19 +522,36 @@ function makePokemon(id) {
 
     dexNumber.innerHTML = "# " + pokemon.dex;
     //for the only stellar pokemon
-    primaryType.src = pokemon.id == "10277" ? "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/19.png" : 
-                        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/champions/" + pokemon.primaryTypeID +".png";
-    primaryType.alt = pokemon.id == "10277" ? "stellar" : 
-                        pokemon.primaryType;
-    secondaryType.src = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/champions/" + pokemon.secondaryTypeID +".png";
+    primaryType.src = pokemon.id == "10277" ?
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/19.png" :
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/champions/" +
+        pokemon.primaryTypeID + ".png";
+    primaryType.alt = pokemon.id == "10277" ? "stellar" :
+        pokemon.primaryType;
+    secondaryType.src =
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/champions/" +
+        pokemon.secondaryTypeID + ".png";
     secondaryType.alt = pokemon.secondaryType;
     // second type badge space will be taken
     secondaryType.style.display = pokemon.secondaryType == "" ? "none" : "block";
 
     genus.innerHTML = pokemon.genus;
     // if you inspect you can see double quotation marks
-    dexEntry.innerHTML = '"' + pokemon.dexEntry + '"';
+    dexEntry.innerHTML = pokemon.dexEntry;
     dexGame.innerHTML = "- Pok&eacute;mon " + pokemon.game;
+
+    ability.innerHTML = pokemon.ability;
+    abilityDesc.innerHTML = pokemon.abilityDesc;
+
+    height.innerHTML = pokemon.height;
+    weight.innerHTML = pokemon.weight;
+    catchRate.innerHTML = pokemon.catchRate;
+    baseFriendship.innerHTML = pokemon.baseFriendship;
+    growthRate.innerHTML = pokemon.growthRate;
+    eggGroup.innerHTML = pokemon.eggGroup;
+    stats.forEach((stat) => {
+        stat.style.visibility = "visible";
+    })
 
     color.style.backgroundColor = pokemon.color;
     shinyIcon.style.visibility = pokemon.shiny ? "visible" : "hidden";
@@ -527,15 +636,19 @@ async function generate() {
     makePokemon(id);
     updateIVChart();
     updateBSTChart();
+
+    coverAni();
 }
 button.onclick = generate;
 
 function cryHover() {
-    cry.src = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/emerald/animated/294.png"
+    cry.src =
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/emerald/animated/294.png"
 }
 
 function cryUnhover() {
-    cry.src = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/ruby-sapphire/294.png"
+    cry.src =
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/ruby-sapphire/294.png"
 }
 
 cry.onmouseover = cryHover;
@@ -543,3 +656,36 @@ cry.onmouseout = cryUnhover;
 cry.onclick = function () {
     pokemon.cry.play();
 };
+
+function coverAni() {
+
+    covers.forEach((cover) => {
+        $(cover).animate({
+            width: "0%",
+            opacity: 0
+        }, {
+            duration: 250
+        })
+    })
+    
+    $(pokeball).animate({
+        rotate: "360deg",
+        top: "7.5%",
+        scale: "0.5"
+    }, {
+        easing: "linear",
+        duration: 500
+    })
+}
+
+// it will only rotate once i dont wanna fix it
+function pokeballAni() {
+    $(pokeball).stop();
+    $(pokeball).animate({
+        rotate: "360deg"
+    }, {
+        duration: 500
+    })
+    pokeball.style.rotate = "0";
+}
+pokeball.onclick = pokeballAni;

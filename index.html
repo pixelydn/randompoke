@@ -22,10 +22,31 @@
             2026-11-06: fetch from pokeapi
             2026-11-10: fetch variants from pokeapi and added a bst chart
             2026-11-11: fetch forms, yes, I am tired of this
+            2026-11-12: added cries
+            2026-11-13: protoype ability fetch
+            2026-11-14: inplenmented the ability
+            2026-11-16: styling
+            2026-11-17: fetch for misc info
+            2026-11-18: bugfix
+            2026-11-19: animations
     -->
 </head>
 
 <body>
+    <div class="cover-container">
+        <div class="cover-left cover">
+
+        </div>
+        <div class="pokeball generate">
+            <div class="pokeball-top"></div>
+            <div class="pokeball-center"></div>
+            <div class="pokeball-bottom"></div>
+        </div>
+        <div class="cover-right cover">
+
+        </div>
+    </div>
+
     <div class="pokedex">
 
         <div class="dex-left">
@@ -45,7 +66,8 @@
                     <img class="sprite" src="" alt="pokemon">
                     <p class="gender"></p>
                     <p class="color"></p>
-                    <img class="cry" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/ruby-sapphire/294.png">
+                    <img class="cry"
+                        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/ruby-sapphire/294.png">
 
                     <!-- found this on pokeapi -->
                     <span class="shiny-icon" title="Shiny">
@@ -76,13 +98,17 @@
         <div class="dex-hinge"></div>
 
         <div class="dex-right">
+
             <div class="id-type">
                 <p class="dex-number"># 000</p>
                 <div class="mon-type">
-                    <img class="primary-type" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/champions/1.png" alt="normal">
+                    <img class="primary-type"
+                        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/champions/1.png"
+                        alt="normal">
                     <img class="secondary-type" src="" alt="">
                 </div>
             </div>
+
             <div class="bst-container panel">
                 <div class="stat-names">
                     <p>HP</p>
@@ -96,9 +122,48 @@
                     <canvas class="bst-chart"></canvas>
                 </div>
             </div>
+
+            <div class="ability-misc">
+
+                <div class="ability-container panel">
+                    <h2 class="ability"></h2>
+                    <p class="ability-desc"></p>
+                </div>
+
+                <div class="misc-info panel">
+
+                    <div class="info-container">
+                        <!-- workaround cuz I dont wanna set line height -->
+                        <div>
+                            <p>Height
+                                <span class="stat height">1</span></p>
+                        </div>
+                        <div>
+                            <p>Weight
+                                <span class="stat weight">1</span></p>
+                        </div>
+                        <div>
+                            <p>Catch Rate
+                                <span class="stat catch-rate">1</span></p>
+                        </div>
+                        <div>
+                            <p>Base Friendship (Gen 7)
+                                <span class="stat base-friendship">1</span></p>
+                        </div>
+                        <div>
+                            <p>Growth Rate
+                                <span class="stat growth-rate">1</span></p>
+                        </div>
+                        <div>
+                            <p>Egg Group
+                                <span class="stat egg-group">1</span></p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
-    <button class="generate">Generate</button>
 </body>
 
 </html>
