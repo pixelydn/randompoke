@@ -36,7 +36,8 @@ body {
 /* the red pokedex, halves side by side */
 .pokedex {
     position: absolute;
-    top: 50%;
+    /* move with the smaller screen, give space to the pokeball */
+    top: max(50%, 30.5rem);
     left: 50%;
     translate: -50% -50%;
     display: flex;
@@ -189,6 +190,11 @@ body {
     cursor: pointer;
 }
 
+/* the other image had no buffer and this is perfect */
+.cry:hover {
+    scale: 1.2;
+}
+
 .shiny-icon {
     position: absolute;
     top: 0.5rem;
@@ -211,7 +217,7 @@ body {
 .iv-container {
     display: flex;
     width: 14rem;
-    height: 10rem;
+    height: 12rem;
     justify-content: center;
 }
 
@@ -351,7 +357,8 @@ body {
 /* .generate {} */
 
 .cover-container {
-    position: fixed;
+    pointer-events: none;
+    position: absolute;
     width: 100%;
     height: 100%;
     inset: 0;
@@ -362,6 +369,7 @@ body {
 }
 
 .pokeball {
+    pointer-events: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -373,11 +381,25 @@ body {
     translate: -50% -50%;
     height: 10rem;
     width: 10rem;
-    transform: rotate(360);
+    /* transform: rotate(360); */
+    z-index: 999999999;
+
+    /* let css do the tranistion work cuz jquey is unreliable */
+    transition: top 0.5s linear, scale 0.2s;
 }
 
 .pokeball:hover {
     scale: 1.1;
+}
+
+.pokeball.moved {
+    /* half of the top space, if to small, push the pokedex down and take the middle again */
+    top: max(calc((100% - 47rem) / 4), 3.5rem);
+    scale: 0.5;
+}
+
+.pokeball.moved:hover {
+    scale: 0.55;
 }
 
 .pokeball-top {
@@ -414,6 +436,7 @@ body {
 }
 
 .cover-left {
+    pointer-events: auto;
     height: 100%;
     width: 50%;
     left: 0;
@@ -421,6 +444,7 @@ body {
 }
 
 .cover-right {
+    pointer-events: auto;
     height: 100%;
     width: 50%;
     right: 0;

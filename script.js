@@ -25,7 +25,7 @@ const baseFriendship = document.querySelector(".base-friendship");
 const growthRate = document.querySelector(".growth-rate");
 const eggGroup = document.querySelector(".egg-group");
 const covers = document.querySelectorAll(".cover");
-const pokeball = document.querySelectorAll(".pokeball");
+const pokeball = document.querySelector(".pokeball");
 
 const natures = [
     "Bashful (+Sp. Atk, -Sp. Atk)",
@@ -538,7 +538,8 @@ function makePokemon(id) {
     genus.innerHTML = pokemon.genus;
     // if you inspect you can see double quotation marks
     dexEntry.innerHTML = pokemon.dexEntry;
-    dexGame.innerHTML = "- Pok&eacute;mon " + pokemon.game;
+    // change lets into let's
+    dexGame.innerHTML = "- Pok&eacute;mon " + pokemon.game.replace("lets", "let's");
 
     ability.innerHTML = pokemon.ability;
     abilityDesc.innerHTML = pokemon.abilityDesc;
@@ -639,7 +640,7 @@ async function generate() {
 
     coverAni();
 }
-button.onclick = generate;
+// button.onclick = generate;
 
 function cryHover() {
     cry.src =
@@ -668,24 +669,22 @@ function coverAni() {
         })
     })
     
-    $(pokeball).animate({
-        rotate: "360deg",
-        top: "7.5%",
-        scale: "0.5"
-    }, {
-        easing: "linear",
-        duration: 500
-    })
+    // toggle the moved version
+    pokeball.classList.add("moved");
 }
 
 // it will only rotate once i dont wanna fix it
-function pokeballAni() {
+function spinPokeball() {
+    // rest the rotation
+    pokeball.style.rotate = "0deg";
     $(pokeball).stop();
     $(pokeball).animate({
         rotate: "360deg"
     }, {
         duration: 500
     })
-    pokeball.style.rotate = "0";
 }
-pokeball.onclick = pokeballAni;
+pokeball.onclick = function() {
+    spinPokeball();
+    generate();
+}
